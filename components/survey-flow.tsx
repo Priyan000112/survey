@@ -58,6 +58,7 @@ export function SurveyFlow() {
   const [stepIndex, setStepIndex] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [customIssue, setCustomIssue] = useState("");
   const [answers, setAnswers] = useState<Answers>({
     candidateId: "",
     issue: "",
@@ -283,7 +284,7 @@ export function SurveyFlow() {
           </p>
         </div>
 
-        <div className="mt-5 grid gap-3">
+        <div className={`mt-5 grid gap-3 ${currentStep.key === "issue" ? "grid-cols-2" : ""}`}>
           {currentStep.options.map((option) => {
             const active = currentValue === option.value;
 
@@ -301,10 +302,10 @@ export function SurveyFlow() {
                 }`}
                 aria-pressed={active}
               >
-                <div className="text-base font-bold leading-6 text-stone-900">
+                <div className={`font-bold leading-6 text-stone-900 ${currentStep.key === "issue" ? "text-sm" : "text-base"}`}>
                   {option.label}
                 </div>
-                {option.caption ? (
+                {option.caption && currentStep.key !== "issue" ? (
                   <div className="mt-1 text-sm leading-6 text-stone-600">
                     {option.caption}
                   </div>
@@ -312,7 +313,39 @@ export function SurveyFlow() {
               </button>
             );
           })}
+
+          {currentStep.key === "issue" && (
+            <button
+              type="button"
+              onClick={() => selectAnswer("issue", customIssue.trim() ? `Lainnya: ${customIssue.trim()}` : "Lainnya")}
+              className={`focus-ring min-h-[72px] w-full rounded-2xl border px-5 py-5 text-left transition ${
+                currentValue.startsWith("Lainnya")
+                  ? "border-brand-600 bg-brand-50 shadow-[inset_0_0_0_2px_rgba(31,93,63,0.3)]"
+                  : "border-stone-300 bg-white hover:border-brand-300 hover:bg-stone-50/70"
+              }`}
+              aria-pressed={currentValue.startsWith("Lainnya")}
+            >
+              <div className="text-sm font-bold leading-6 text-stone-900">Lainnya</div>
+            </button>
+          )}
         </div>
+
+        {currentStep.key === "issue" && currentValue.startsWith("Lainnya") && (
+          <div className="mt-3">
+            <input
+              type="text"
+              value={customIssue}
+              onChange={(e) => {
+                const val = e.target.value;
+                setCustomIssue(val);
+                selectAnswer("issue", val.trim() ? `Lainnya: ${val.trim()}` : "Lainnya");
+              }}
+              placeholder="Tulis isu yang panjenengan maksud..."
+              className="focus-ring w-full rounded-2xl border border-brand-300 bg-white px-4 py-4 text-base text-stone-900 placeholder:text-stone-400 focus:border-brand-600"
+              autoFocus
+            />
+          </div>
+        )}
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <button
