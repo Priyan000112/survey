@@ -284,7 +284,7 @@ export function SurveyFlow() {
           </p>
         </div>
 
-        <div className={`mt-5 grid gap-3 ${currentStep.key === "issue" ? "grid-cols-2" : ""}`}>
+        <div className={`mt-5 grid gap-3 ${currentStep.key === "issue" || currentStep.key === "candidateId" ? "grid-cols-2" : ""}`}>
           {currentStep.options.map((option) => {
             const active = currentValue === option.value;
 
@@ -295,20 +295,22 @@ export function SurveyFlow() {
                 onClick={() =>
                   selectAnswer(currentStep.key as keyof Answers, option.value)
                 }
-                className={`focus-ring min-h-[72px] w-full rounded-2xl border px-5 py-5 text-left transition ${
+                className={`focus-ring min-h-[72px] w-full rounded-2xl border px-4 py-4 text-left transition ${
                   active
                     ? "border-brand-600 bg-brand-50 shadow-[inset_0_0_0_2px_rgba(31,93,63,0.3)]"
                     : "border-stone-300 bg-white hover:border-brand-300 hover:bg-stone-50/70"
                 }`}
                 aria-pressed={active}
               >
-                <div className={`font-bold leading-6 text-stone-900 ${currentStep.key === "issue" ? "text-sm" : "text-base"}`}>
+                <div className={`font-bold leading-6 text-stone-900 ${currentStep.key === "issue" || currentStep.key === "candidateId" ? "text-sm" : "text-base"}`}>
                   {option.label}
                 </div>
-                {option.caption && currentStep.key !== "issue" ? (
+                {option.caption && currentStep.key !== "issue" && currentStep.key !== "candidateId" ? (
                   <div className="mt-1 text-sm leading-6 text-stone-600">
                     {option.caption}
                   </div>
+                ) : option.caption && currentStep.key === "candidateId" ? (
+                  <div className="mt-0.5 text-xs text-stone-500">{option.caption}</div>
                 ) : null}
               </button>
             );
