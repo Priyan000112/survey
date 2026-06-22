@@ -129,6 +129,10 @@ export function SurveyFlow() {
     }));
   }
 
+  useEffect(() => {
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [stepIndex]);
+
   function scrollToTop() {
     topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -140,8 +144,6 @@ export function SurveyFlow() {
     if (currentStep.required && !currentValue) {
       return;
     }
-
-    scrollToTop();
 
     if (stepIndex === steps.length - 1) {
       void handleSubmit();
@@ -169,7 +171,6 @@ export function SurveyFlow() {
   }
 
   function previousStep() {
-    scrollToTop();
     setStepIndex((value) => Math.max(0, value - 1));
   }
 
