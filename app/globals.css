@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-[#f4f1e8] text-stone-900 antialiased;
+  font-family: Arial, Helvetica, sans-serif;
+  background-image:
+    radial-gradient(circle at top right, rgba(246, 203, 81, 0.18), transparent 24rem),
+    linear-gradient(180deg, #fbf8f2 0%, #f1ede4 100%);
+}
+
+html[data-text-scale="large"] {
+  font-size: 18px;
+}
+
+html[data-text-scale="normal"] {
+  font-size: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.page-shell {
+  @apply mx-auto w-full max-w-md px-4 pb-32 pt-5 sm:max-w-2xl sm:px-6;
+}
+
+.panel {
+  @apply rounded-lg border border-white/70 bg-white shadow-soft backdrop-blur-sm;
+}
+
+.section-title {
+  @apply text-xl font-semibold text-brand-900;
+}
+
+.muted {
+  @apply text-sm leading-6 text-stone-600;
+}
+
+.progress-track {
+  @apply h-2.5 overflow-hidden rounded-full bg-stone-200/90;
+}
+
+.progress-fill {
+  @apply h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-700;
+}
+
+.touch-button {
+  @apply inline-flex min-h-[52px] items-center justify-center rounded-lg px-4 py-3 text-base font-semibold transition duration-200;
+}
+
+.focus-ring {
+  @apply focus:outline-none focus:ring-4 focus:ring-brand-200;
+}
+
+.eyebrow {
+  @apply inline-flex rounded-full border border-brand-200/80 bg-brand-50 px-3 py-1 text-sm font-medium text-brand-700;
+}
+
+.soft-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.section-band {
+  @apply rounded-2xl border border-white/70 bg-white/60 p-1 backdrop-blur-sm;
+}
