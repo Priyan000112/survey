@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, CheckCircle2, ShieldAlert } from "lucide-react";
 import { candidates } from "@/data/candidates";
 import { issues } from "@/data/issues";
@@ -51,6 +51,7 @@ const satisfactionOptions: StepOption[] = [
 ];
 
 export function SurveyFlow() {
+  const topRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
   const [hasVoted, setHasVoted] = useState(false);
   const [storageReady, setStorageReady] = useState(true);
@@ -128,6 +129,10 @@ export function SurveyFlow() {
     }));
   }
 
+  function scrollToTop() {
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   function nextStep() {
     const currentStep = steps[stepIndex];
     const currentValue = answers[currentStep.key as keyof Answers];
@@ -136,7 +141,7 @@ export function SurveyFlow() {
       return;
     }
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToTop();
 
     if (stepIndex === steps.length - 1) {
       void handleSubmit();
@@ -164,7 +169,7 @@ export function SurveyFlow() {
   }
 
   function previousStep() {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToTop();
     setStepIndex((value) => Math.max(0, value - 1));
   }
 
@@ -244,6 +249,7 @@ export function SurveyFlow() {
 
   return (
     <>
+      <div ref={topRef} />
       {!storageReady && (
         <section className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-4">
           <div className="flex items-start gap-3">
