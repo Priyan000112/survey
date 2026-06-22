@@ -136,6 +136,8 @@ export function SurveyFlow() {
       return;
     }
 
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     if (stepIndex === steps.length - 1) {
       void handleSubmit();
       return;
@@ -162,6 +164,7 @@ export function SurveyFlow() {
   }
 
   function previousStep() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setStepIndex((value) => Math.max(0, value - 1));
   }
 
