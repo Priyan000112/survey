@@ -22,10 +22,12 @@ function SummaryCard({
 
 function MainChart({
   items,
-  total
+  total,
+  lastUpdated
 }: {
   items: StatBucket[];
   total: number;
+  lastUpdated: Date | null;
 }) {
   return (
     <section className="panel rounded-3xl p-5">
@@ -36,12 +38,19 @@ function MainChart({
             Elektabilitas sementara
           </h2>
         </div>
-        <p className="text-sm text-stone-500">{total} responden</p>
+        <div className="text-right">
+          <p className="text-sm text-stone-500">{total} responden</p>
+          {lastUpdated && (
+            <p className="text-xs text-stone-400">
+              Diperbarui {lastUpdated.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="mt-5 space-y-4">
         {items.map((item, index) => {
-          const percentage = total ? Math.round((item.count / total) * 100) : 0;
+          const percentage = total ? parseFloat(((item.count / total) * 100).toFixed(1)) : 0;
 
           return (
             <div
@@ -97,7 +106,7 @@ function CompactChart({
       <h2 className="text-lg font-semibold text-brand-950">{title}</h2>
       <div className="mt-4 space-y-3">
         {items.map((item) => {
-          const percentage = total ? Math.round((item.count / total) * 100) : 0;
+          const percentage = total ? parseFloat(((item.count / total) * 100).toFixed(1)) : 0;
 
           return (
             <div key={item.label} className="rounded-xl bg-stone-50 p-3">
@@ -127,32 +136,34 @@ export function ResultsPanel() {
   const [ready, setReady] = useState(false);
   const [summary, setSummary] = useState<VoteSummary | null>(null);
   const [loadError, setLoadError] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   useEffect(() => {
     let active = true;
 
-    fetchVoteSummary()
-      .then((serverSummary) => {
-        if (!active) {
-          return;
-        }
+    function load() {
+      fetchVoteSummary()
+        .then((serverSummary) => {
+          if (!active) return;
+          setSummary(serverSummary);
+          setLoadError(false);
+          setReady(true);
+          setLastUpdated(new Date());
+        })
+        .catch(() => {
+          if (!active) return;
+          setSummary(null);
+          setLoadError(true);
+          setReady(true);
+        });
+    }
 
-        setSummary(serverSummary);
-        setLoadError(false);
-        setReady(true);
-      })
-      .catch(() => {
-        if (!active) {
-          return;
-        }
-
-        setSummary(null);
-        setLoadError(true);
-        setReady(true);
-      });
+    load();
+    const interval = setInterval(load, 30_000);
 
     return () => {
       active = false;
+      clearInterval(interval);
     };
   }, []);
 
@@ -210,7 +221,7 @@ export function ResultsPanel() {
         </div>
       </section>
 
-      <MainChart items={summary.candidateStats} total={summary.totalVotes} />
+      <MainChart items={summary.candidateStats} total={summary.totalVotes} lastUpdated={lastUpdated} />
 
       <section className="grid gap-4">
         <CompactChart

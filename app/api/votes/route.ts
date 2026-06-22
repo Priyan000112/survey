@@ -12,6 +12,26 @@ import type { VotePayload } from "@/lib/types";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
+// Simple in-memory rate limiter: max 5 POST per IP per minute
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + 60_000 });
+    return false;
+  }
+
+  if (entry.count >= 5) {
+    return true;
+  }
+
+  entry.count++;
+  return false;
+}
+
 function isValidVote(payload: Partial<VotePayload>) {
   return Boolean(
     payload.candidateId &&
@@ -58,6 +78,20 @@ function getClientIp(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const clientIp = getClientIp(request);
+
+    if (isRateLimited(clientIp)) {
+      return NextResponse.json(
+        {
+          saved: false,
+          duplicate: false,
+          storageAvailable: true,
+          message: "Terlalu banyak percobaan. Coba lagi dalam 1 menit."
+        },
+        { status: 429 }
+      );
+    }
+
     const payload = (await request.json()) as Partial<VotePayload>;
 
     if (!isValidVote(payload)) {
@@ -74,7 +108,6 @@ export async function POST(request: NextRequest) {
 
     const sessionId = request.cookies.get("svm_sid")?.value || createSessionId();
     const userAgent = request.headers.get("user-agent") || "unknown";
-    const clientIp = getClientIp(request);
     const fingerprintHash = createFingerprint(`${clientIp}|${userAgent}`);
 
     const result = await appendVote(

@@ -4,6 +4,9 @@ import { BottomNav } from "@/components/bottom-nav";
 import { TextSizeToggle } from "@/components/text-size-toggle";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://survey-maribaya.vercel.app"
+  ),
   title: "Suara Warga Maribaya 2026",
   description:
     "Survei aspirasi warga Desa Maribaya untuk menentukan tokoh potensial kepala desa periode berikutnya.",
