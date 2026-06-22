@@ -4,21 +4,9 @@ import { useEffect, useState } from "react";
 import { fetchVoteSummary } from "@/lib/storage";
 import type { StatBucket, VoteSummary } from "@/lib/types";
 import { SkeletonBlock } from "@/components/skeleton-block";
+import { RefreshCw } from "lucide-react";
 
-function SummaryCard({
-  label,
-  value
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-2xl bg-white/12 p-4 ring-1 ring-white/10">
-      <p className="text-sm text-white/78">{label}</p>
-      <p className="mt-2 text-2xl font-bold leading-tight text-white">{value}</p>
-    </div>
-  );
-}
+const MEDALS = ["🥇", "🥈", "🥉"];
 
 function MainChart({
   items,
@@ -31,56 +19,51 @@ function MainChart({
 }) {
   return (
     <section className="panel rounded-3xl p-5">
-      <div className="flex items-end justify-between gap-3">
-        <div>
-          <span className="eyebrow">Fokus utama</span>
-          <h2 className="mt-3 text-2xl font-bold text-brand-950">
-            Elektabilitas sementara
-          </h2>
-        </div>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-xl font-bold text-brand-950">Elektabilitas</h2>
         <div className="text-right">
-          <p className="text-sm text-stone-500">{total} responden</p>
+          <p className="text-sm font-semibold text-stone-600">{total} suara</p>
           {lastUpdated && (
-            <p className="text-xs text-stone-400">
-              Diperbarui {lastUpdated.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
+            <p className="flex items-center justify-end gap-1 text-xs text-stone-400">
+              <RefreshCw className="h-3 w-3" />
+              {lastUpdated.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
             </p>
           )}
         </div>
       </div>
 
-      <div className="mt-5 space-y-4">
+      <div className="mt-4 space-y-3">
         {items.map((item, index) => {
           const percentage = total ? parseFloat(((item.count / total) * 100).toFixed(1)) : 0;
+          const isFirst = index === 0;
 
           return (
             <div
               key={item.label}
               className={`rounded-2xl border p-4 ${
-                index === 0
-                  ? "border-brand-200 bg-brand-50"
+                isFirst
+                  ? "border-brand-300 bg-gradient-to-r from-brand-50 to-accent-50"
                   : "border-stone-200 bg-white"
               }`}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-stone-500">
-                    {index === 0 ? "Peringkat 1" : `Peringkat ${index + 1}`}
-                  </p>
-                  <h3 className="mt-1 text-base font-bold leading-6 text-stone-900">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="text-2xl">{MEDALS[index] ?? `${index + 1}`}</span>
+                  <h3 className={`font-bold leading-tight ${isFirst ? "text-lg text-brand-900" : "text-base text-stone-800"}`}>
                     {item.label}
                   </h3>
                 </div>
                 <div className="shrink-0 text-right">
-                  <div className="text-2xl font-bold text-brand-700">
+                  <div className={`font-bold ${isFirst ? "text-3xl text-brand-700" : "text-xl text-stone-700"}`}>
                     {percentage}%
                   </div>
-                  <div className="text-sm text-stone-500">{item.count} suara</div>
+                  <div className="text-xs text-stone-500">{item.count} suara</div>
                 </div>
               </div>
 
-              <div className="mt-4 h-4 overflow-hidden rounded-full bg-stone-200">
+              <div className="mt-3 h-4 overflow-hidden rounded-full bg-stone-200">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-700"
+                  className={`h-full rounded-full transition-all duration-700 ${isFirst ? "bg-gradient-to-r from-brand-500 to-brand-700" : "bg-brand-400"}`}
                   style={{ width: `${percentage}%` }}
                 />
               </div>
@@ -103,24 +86,23 @@ function CompactChart({
 }) {
   return (
     <section className="panel rounded-2xl p-5">
-      <h2 className="text-lg font-bold text-brand-950">{title}</h2>
-      <div className="mt-4 space-y-3">
+      <h2 className="text-base font-bold text-brand-950">{title}</h2>
+      <div className="mt-3 space-y-2">
         {items.map((item) => {
           const percentage = total ? parseFloat(((item.count / total) * 100).toFixed(1)) : 0;
 
           return (
-            <div key={item.label} className="rounded-xl bg-stone-50 p-3">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-base font-semibold leading-6 text-stone-800">
-                  {item.label}
-                </span>
-                <span className="shrink-0 text-base font-bold text-brand-700">
-                  {percentage}%
-                </span>
+            <div key={item.label} className="rounded-xl bg-stone-50 px-3 py-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-semibold text-stone-800 leading-5">{item.label}</span>
+                <div className="shrink-0 flex items-center gap-2">
+                  <span className="text-xs text-stone-400">{item.count} suara</span>
+                  <span className="text-sm font-bold text-brand-700 w-12 text-right">{percentage}%</span>
+                </div>
               </div>
-              <div className="mt-2 h-3 overflow-hidden rounded-full bg-stone-200">
+              <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-stone-200">
                 <div
-                  className="h-full rounded-full bg-brand-600"
+                  className="h-full rounded-full bg-brand-500"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
@@ -171,9 +153,8 @@ export function ResultsPanel() {
     if (ready && loadError) {
       return (
         <section className="panel rounded-2xl p-5">
-          <h2 className="text-xl font-semibold text-brand-950">Hasil sementara</h2>
-          <p className="mt-3 text-[15px] leading-7 text-stone-700">
-            Data hasil belum bisa dimuat sekarang. Coba buka lagi sebentar.
+          <p className="text-base text-stone-700">
+            Data belum bisa dimuat. Coba buka lagi sebentar.
           </p>
         </section>
       );
@@ -190,61 +171,48 @@ export function ResultsPanel() {
 
   if (summary.totalVotes === 0) {
     return (
-      <section className="panel rounded-2xl p-5">
-        <h2 className="text-xl font-semibold text-brand-950">Belum ada hasil masuk</h2>
-        <p className="mt-3 text-[15px] leading-7 text-stone-700">
-          Belum ada suara yang tercatat. Nanti kalau sudah ada yang mengisi,
-          ringkasan dan grafik akan muncul di sini.
+      <section className="panel rounded-2xl p-5 text-center space-y-2">
+        <p className="text-4xl">🗳️</p>
+        <h2 className="text-lg font-bold text-brand-950">Belum ada suara masuk</h2>
+        <p className="text-base text-stone-600">
+          Nanti kalau sudah ada yang mengisi, hasil akan muncul di sini.
         </p>
       </section>
     );
   }
 
-  return (
-    <section className="space-y-5">
-      <section className="overflow-hidden rounded-3xl bg-brand-700 text-white shadow-[0_24px_64px_rgba(16,45,32,0.18)]">
-        <div className="space-y-4 px-5 py-5">
-          <div>
-            <span className="inline-flex rounded-full bg-white/12 px-3 py-1 text-sm">
-              Ringkasan cepat
-            </span>
-            <h2 className="mt-3 text-2xl font-bold leading-tight">
-              Gambaran hasil sementara
-            </h2>
-          </div>
+  const leader = summary.candidateStats[0];
+  const leaderPct = leader ? parseFloat(((leader.count / summary.totalVotes) * 100).toFixed(1)) : 0;
 
-          <div className="grid gap-3 sm:grid-cols-3">
-            <SummaryCard label="Total responden" value={`${summary.totalVotes}`} />
-            <SummaryCard label="Tokoh teratas" value={summary.leader} />
-            <SummaryCard label="Isu teratas" value={summary.topIssue} />
+  return (
+    <section className="space-y-4">
+      {/* Hero banner tokoh teratas */}
+      <section className="overflow-hidden rounded-3xl bg-brand-700 text-white shadow-[0_24px_64px_rgba(16,45,32,0.18)] p-5">
+        <p className="text-sm text-white/70">Unggul sementara</p>
+        <h2 className="mt-1 text-3xl font-bold leading-tight">{leader?.label}</h2>
+        <p className="mt-1 text-5xl font-bold text-accent-300">{leaderPct}%</p>
+        <div className="mt-4 grid grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-white/10 p-3 text-center">
+          <div>
+            <p className="text-xl font-bold">{summary.totalVotes}</p>
+            <p className="mt-0.5 text-xs text-white/70">Total suara</p>
+          </div>
+          <div>
+            <p className="text-xl font-bold">{summary.candidateStats.length}</p>
+            <p className="mt-0.5 text-xs text-white/70">Tokoh</p>
+          </div>
+          <div>
+            <p className="text-xl font-bold truncate text-sm leading-5 pt-1">{summary.topIssue.split(" ").slice(0, 2).join(" ")}</p>
+            <p className="mt-0.5 text-xs text-white/70">Isu teratas</p>
           </div>
         </div>
       </section>
 
       <MainChart items={summary.candidateStats} total={summary.totalVotes} lastUpdated={lastUpdated} />
 
-      <section className="grid gap-4">
-        <CompactChart
-          title="Isu paling banyak dipilih"
-          items={summary.issueStats}
-          total={summary.totalVotes}
-        />
-        <CompactChart
-          title="Distribusi responden per dusun"
-          items={summary.dusunStats}
-          total={summary.totalVotes}
-        />
-        <CompactChart
-          title="Distribusi usia"
-          items={summary.ageStats}
-          total={summary.totalVotes}
-        />
-        <CompactChart
-          title="Kepuasan terhadap pemerintahan saat ini"
-          items={summary.satisfactionStats}
-          total={summary.totalVotes}
-        />
-      </section>
+      <CompactChart title="Isu paling banyak dipilih" items={summary.issueStats} total={summary.totalVotes} />
+      <CompactChart title="Per dusun" items={summary.dusunStats} total={summary.totalVotes} />
+      <CompactChart title="Kelompok usia" items={summary.ageStats} total={summary.totalVotes} />
+      <CompactChart title="Kepuasan pemerintahan desa" items={summary.satisfactionStats} total={summary.totalVotes} />
     </section>
   );
 }
