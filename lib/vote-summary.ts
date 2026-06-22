@@ -2,11 +2,15 @@ import { candidates } from "@/data/candidates";
 import { issues } from "@/data/issues";
 import type { StatBucket, VoteRecord, VoteSummary } from "@/lib/types";
 
-function aggregate(values: string[], allLabels: string[]): StatBucket[] {
+function aggregate(values: string[], allLabels: string[], includeUnknown = false): StatBucket[] {
   const counts = new Map<string, number>();
 
   allLabels.forEach((label) => counts.set(label, 0));
-  values.forEach((value) => counts.set(value, (counts.get(value) ?? 0) + 1));
+  values.forEach((value) => {
+    if (counts.has(value) || includeUnknown) {
+      counts.set(value, (counts.get(value) ?? 0) + 1);
+    }
+  });
 
   return Array.from(counts.entries()).map(([label, count]) => ({ label, count }));
 }
@@ -26,7 +30,8 @@ export function createVoteSummary(votes: VoteRecord[]): VoteSummary {
   const issueStats = sortBuckets(
     aggregate(
       votes.map((vote) => vote.issue),
-      issues.map((issue) => issue.label)
+      issues.map((issue) => issue.label),
+      true // include unknown values (e.g. "Lainnya: ...")
     )
   );
 
