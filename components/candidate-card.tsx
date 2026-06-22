@@ -9,22 +9,22 @@ export function CandidateCard({ candidate }: { candidate: Candidate }) {
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-xl font-semibold text-brand-950">{candidate.name}</h2>
-            <span className="rounded-full bg-accent-100 px-3 py-1 text-xs font-semibold text-[#8c6509]">
+            <h2 className="text-xl font-bold text-brand-950">{candidate.name}</h2>
+            <span className="rounded-full bg-accent-100 px-3 py-1 text-sm font-semibold text-[#8c6509]">
               {candidate.category}
             </span>
           </div>
           <p className="mt-1 text-sm font-medium text-stone-500">
             Tokoh potensial, belum tentu calon resmi
           </p>
-          <p className="mt-3 text-[15px] leading-7 text-stone-700 sm:text-base">
+          <p className="mt-3 text-base leading-7 text-stone-700">
             {candidate.description}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {candidate.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700"
+                className="rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-sm font-medium text-brand-700"
               >
                 {tag}
               </span>

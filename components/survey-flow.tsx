@@ -265,10 +265,10 @@ export function SurveyFlow() {
         </div>
 
         <div className="mt-5 rounded-2xl bg-brand-50/70 p-4">
-          <h2 className="text-[1.55rem] font-bold leading-tight text-brand-900 sm:text-2xl">
+          <h2 className="text-2xl font-bold leading-tight text-brand-900">
             {currentStep.title}
           </h2>
-          <p className="mt-2 text-[15px] leading-7 text-stone-700 sm:text-base">
+          <p className="mt-2 text-base leading-7 text-stone-700">
             {currentStep.helper}
           </p>
         </div>
@@ -284,14 +284,14 @@ export function SurveyFlow() {
                 onClick={() =>
                   selectAnswer(currentStep.key as keyof Answers, option.value)
                 }
-                className={`focus-ring min-h-16 rounded-2xl border px-4 py-4 text-left transition ${
+                className={`focus-ring min-h-[72px] w-full rounded-2xl border px-5 py-5 text-left transition ${
                   active
-                    ? "border-brand-600 bg-brand-50 shadow-[inset_0_0_0_1px_rgba(31,93,63,0.14)]"
-                    : "border-stone-200 bg-white hover:border-brand-300 hover:bg-stone-50/70"
+                    ? "border-brand-600 bg-brand-50 shadow-[inset_0_0_0_2px_rgba(31,93,63,0.3)]"
+                    : "border-stone-300 bg-white hover:border-brand-300 hover:bg-stone-50/70"
                 }`}
                 aria-pressed={active}
               >
-                <div className="text-[15px] font-semibold leading-6 text-stone-900 sm:text-base">
+                <div className="text-base font-bold leading-6 text-stone-900">
                   {option.label}
                 </div>
                 {option.caption ? (

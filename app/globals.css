@@ -19,11 +19,11 @@ body {
 }
 
 html[data-text-scale="large"] {
-  font-size: 18px;
+  font-size: 20px;
 }
 
 html[data-text-scale="normal"] {
-  font-size: 16px;
+  font-size: 17px;
 }
 
 * {
@@ -52,7 +52,7 @@ button {
 }
 
 .progress-track {
-  @apply h-2.5 overflow-hidden rounded-full bg-stone-200/90;
+  @apply h-4 overflow-hidden rounded-full bg-stone-200/90;
 }
 
 .progress-fill {
@@ -60,7 +60,7 @@ button {
 }
 
 .touch-button {
-  @apply inline-flex min-h-[52px] items-center justify-center rounded-lg px-4 py-3 text-base font-semibold transition duration-200;
+  @apply inline-flex min-h-[56px] items-center justify-center rounded-lg px-5 py-3 text-base font-bold transition duration-200;
 }
 
 .focus-ring {

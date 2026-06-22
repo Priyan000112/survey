@@ -26,14 +26,14 @@ export function BottomNav() {
               <Link
                 key={href}
                 href={href}
-                className={`focus-ring flex min-h-[58px] flex-col items-center justify-center rounded-2xl px-1 py-2 text-[11px] font-medium transition ${
+                className={`focus-ring flex min-h-[64px] flex-col items-center justify-center rounded-2xl px-1 py-2 text-xs font-semibold transition ${
                   active
                     ? "bg-brand-700 text-white shadow-lg shadow-brand-900/15"
                     : "text-stone-500 hover:bg-stone-50"
                 }`}
                 aria-current={active ? "page" : undefined}
               >
-                <Icon className="mb-1 h-5 w-5" aria-hidden="true" />
+                <Icon className="mb-1 h-6 w-6" aria-hidden="true" />
                 <span>{label}</span>
               </Link>
             );

@@ -63,10 +63,10 @@ function MainChart({
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-sm text-stone-500">
+                  <p className="text-sm font-medium text-stone-500">
                     {index === 0 ? "Peringkat 1" : `Peringkat ${index + 1}`}
                   </p>
-                  <h3 className="mt-1 text-base font-semibold leading-6 text-stone-900">
+                  <h3 className="mt-1 text-base font-bold leading-6 text-stone-900">
                     {item.label}
                   </h3>
                 </div>
@@ -103,7 +103,7 @@ function CompactChart({
 }) {
   return (
     <section className="panel rounded-2xl p-5">
-      <h2 className="text-lg font-semibold text-brand-950">{title}</h2>
+      <h2 className="text-lg font-bold text-brand-950">{title}</h2>
       <div className="mt-4 space-y-3">
         {items.map((item) => {
           const percentage = total ? parseFloat(((item.count / total) * 100).toFixed(1)) : 0;
@@ -111,10 +111,10 @@ function CompactChart({
           return (
             <div key={item.label} className="rounded-xl bg-stone-50 p-3">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-sm font-medium leading-6 text-stone-800">
+                <span className="text-base font-semibold leading-6 text-stone-800">
                   {item.label}
                 </span>
-                <span className="text-sm font-semibold text-brand-700">
+                <span className="shrink-0 text-base font-bold text-brand-700">
                   {percentage}%
                 </span>
               </div>
